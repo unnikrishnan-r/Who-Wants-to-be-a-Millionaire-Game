@@ -3,6 +3,8 @@
  *********************************************************************************/
 //Variables to map values back to screen
 var winsText = document.getElementById("winsText");
+var lossesText = document.getElementById("lossesText");
+
 var currentWordText = document.getElementById("currentWordText");
 var guessesLeftText = document.getElementById("guessesLeftText");
 var lettersGuessedSoFarText = document.getElementById("lettersGuessedSoFarText");
@@ -26,7 +28,9 @@ var askNextQuestion = true;
 //Counter Variables
 var totalGuess = 100;
 var winCounter = 0;
+var lossCounter = 0;
 var totalPriceMoney = 0;
+var correctGuessCounter = 0;
 
 //Index Variables
 var i = 0;
@@ -39,7 +43,8 @@ var complexWordsToBeAsked = 1;
 var questionNumber = 0;
 var gameLevel;
 var wordInPlay;
-
+var keyPressed;
+var userGuessedCorrect = false;
 //Computer and Player Choice variables
 var randomNumber = 0;
 var userGuess = [];
@@ -109,7 +114,7 @@ function chooseWordForCurrentQuestion() {
     } else {
         wordInPlay = currentGameQuestions.complexWordsChosen[questionNumber - simpleWordsToBeAsked - mediumWordsToBeAsked - 1];
     }
-    for (i= 0; i< wordInPlay.length; i++){
+    for (i = 0; i < wordInPlay.length; i++) {
         computerWord[i] = wordInPlay[i];
     }
     console.log("Word to be Guessed is: " + wordInPlay);
@@ -128,14 +133,44 @@ function askQuestionOnScreen() {
     document.querySelector("#computerMadeItsChoice").innerHTML = "Computer made its choice, start your guess";
     guessesLeftText.textContent = totalGuess;
     winsText.textContent = winCounter;
-    for (i= 0; i<= wordInPlay.length; i++){
+    for (i = 0; i <= wordInPlay.length - 1; i++) {
         currentWord[i] = '_';
-        userGuess[i] = ' '
     }
     currentWordText.textContent = currentWord;
     lettersGuessedSoFarText.textContent = userGuess;
+    correctGuessCounter = 0;
 
 }
+
+//Function to handle succesfull guess by user
+function processCorrectGuess() {
+    currentWord[computerWord.indexOf(keyPressed)] = keyPressed;
+    correctGuessCounter++;
+    totalGuess--;
+
+    if (correctGuessCounter == computerWord.length) {
+        winCounter++
+    }
+    console.log(currentWord);
+
+}
+
+function processIncorrectGuess() {
+    if (userGuess.indexOf(keyPressed) == -1) {
+
+        totalGuess--;
+        userGuess.push(keyPressed);
+        guessesLeftText.textContent = totalGuess;
+        if (totalGuess == 0) {
+            lossCounter++;
+        }
+    } else {
+        console.log("Letter already guessed");
+    }
+
+
+}
+
 
 //validateUserGuess()
 //Populate user key to array of guessed so far
@@ -144,6 +179,25 @@ function askQuestionOnScreen() {
 //If user guessed key is not in current word, decrement guess Count
 //If userChoice array = currentWord, then user wins
 // Increment price money & Display press any key for next question
+function validateUserGuess() {
+    console.log("User Guessed: " + keyPressed);
+    console.log(computerWord.indexOf(keyPressed));
+    if (computerWord.indexOf(keyPressed) != -1) {
+        userGuessedCorrect = true;
+        processCorrectGuess();
+    } else {
+        userGuessedCorrect = false;
+        processIncorrectGuess();
+
+    }
+    currentWordText.textContent = currentWord;
+    guessesLeftText.textContent = totalGuess;
+    lettersGuessedSoFarText.textContent = userGuess;
+    winsText.textContent = winCounter;
+    lossesText.textContent = lossCounter;
+
+
+}
 
 /*********************************************************************************
  ***************************MAIN PROCESS HERE************************************** 
@@ -153,17 +207,19 @@ function askQuestionOnScreen() {
 // CAPTURE THE KEY STROKE EVENT
 document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to start the game";
 document.onkeyup = function (event) {
+    keyPressed = event.key.toLowerCase();
     //CHECK IF THE GAME HAS STARTED
     if (!hasGameStarted) {
         //IF THE GAME HAS NOT STARTED
         //   INITIALIZE THE COUNTERS - WINS, PRICE MONEY
         //   Call makeComputerMakeTheChoice()
         winCounter = 0;
+        lossCounter = 0;
         totalPriceMoney = 0;
         console.log("Inside Game has not started, initialized variables");
         makeComputerChooseWords();
         hasGameStarted = true;
-        questionNumber = 5
+        questionNumber = 1
 
     }
 
@@ -173,10 +229,9 @@ document.onkeyup = function (event) {
         askQuestionOnScreen();
         askNextQuestion = false;
         return;
+    } else {
+        validateUserGuess();
     }
-    // else{
-    //     validateUserGuess();
-    // }
 }
 
 
