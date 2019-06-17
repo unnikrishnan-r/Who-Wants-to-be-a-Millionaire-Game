@@ -144,6 +144,8 @@ function askQuestionOnScreen() {
     userGuess = [];
     currentWordText.textContent = currentWord;
     lettersGuessedSoFarText.textContent = userGuess;
+    document.querySelector("#questionNumber").innerHTML = wordInPlay;
+
     correctGuessCounter = 0;
 
 }
