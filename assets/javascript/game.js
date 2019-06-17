@@ -10,9 +10,9 @@ var guessesLeftText = document.getElementById("guessesLeftText");
 var lettersGuessedSoFarText = document.getElementById("lettersGuessedSoFarText");
 
 // Array with master list of simple medium and complex words
-var simpleWordsArray = ['lion', 'cat', 'deer', 'tiger', 'dog', "horse", "bear", "camel", "fox", "wolf"];
-var mediumWordsArray = ['tortoise', 'leopard', 'cheetah', 'elephant', 'donkey', 'monkey', 'squirel', 'turtle', 'lizard', 'word10'];
-var complexWordsArray = ['kangaroo', 'rhinocerous', 'hippopotamous', 'reindeer', 'buffalo', 'comp6', 'comp7', 'comp8', 'comp9']
+var simpleWordsArray = ['lion', 'cat', 'fish', 'tiger', 'dog', "horse", "bear", "camel", "fox", "wolf"];
+var mediumWordsArray = ['snake', 'zebra', 'mouse', 'spider', 'donkey', 'monkey', 'squirel', 'turtle', 'lizard', 'word10'];
+var complexWordsArray = ['comp1', 'comp2', 'comp3', 'comp4', 'comp5', 'comp6', 'comp7', 'comp8', 'comp9']
 
 //Object for storing current game questions:
 var currentGameQuestions = {
@@ -88,8 +88,8 @@ function makeComputerChooseWords() {
         randomNumber = Math.floor((Math.random() * complexWordsArray.length) + 1);
         currentGameQuestions.complexWordsChosen.push(complexWordsArray[randomNumber - 1]);
     }
-    console.log(currentGameQuestions);
-    console.log("Computer has chosen " + totalQuestionsInGame + " words");
+    // console.log(currentGameQuestions);
+    // console.log("Computer has chosen " + totalQuestionsInGame + " words");
 }
 
 //Function to determine game level based on question number - Simple, Medium or Complex
@@ -107,6 +107,8 @@ function determineGameLevel(questionNumber) {
 
 //Function to choose the word for current question from the choices Computer made for the game
 function chooseWordForCurrentQuestion() {
+
+    computerWord = [];
     if (gameLevel == 'simple') {
         wordInPlay = currentGameQuestions.simpleWordsChosen[questionNumber - 1];
     } else if (gameLevel == 'medium') {
@@ -118,7 +120,7 @@ function chooseWordForCurrentQuestion() {
         computerWord[i] = wordInPlay[i];
     }
     console.log("Word to be Guessed is: " + wordInPlay);
-    console.log(computerWord);
+    // console.log(computerWord);
 
 
 }
@@ -129,13 +131,17 @@ function chooseWordForCurrentQuestion() {
 // Access object and obtain question, answer and price money
 // Throw information on the screen
 function askQuestionOnScreen() {
+    currentWord = []
     totalGuess = wordInPlay.length * 2;
     document.querySelector("#computerMadeItsChoice").innerHTML = "Computer made its choice, start your guess";
     guessesLeftText.textContent = totalGuess;
     winsText.textContent = winCounter;
+
     for (i = 0; i <= wordInPlay.length - 1; i++) {
         currentWord[i] = '_';
+
     }
+    userGuess = [];
     currentWordText.textContent = currentWord;
     lettersGuessedSoFarText.textContent = userGuess;
     correctGuessCounter = 0;
@@ -149,9 +155,22 @@ function processCorrectGuess() {
     totalGuess--;
 
     if (correctGuessCounter == computerWord.length) {
-        winCounter++
+        winCounter++;
+        questionNumber++;
+        askNextQuestion = true;
+        document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
+
     }
-    console.log(currentWord);
+    if (totalGuess == 0) {
+        lossCounter++;
+        questionNumber++;
+        askNextQuestion = true;
+        document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
+
+
+    }
+
+    // console.log(currentWord);
 
 }
 
@@ -163,6 +182,10 @@ function processIncorrectGuess() {
         guessesLeftText.textContent = totalGuess;
         if (totalGuess == 0) {
             lossCounter++;
+            questionNumber++;
+            askNextQuestion = true;
+            document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
+
         }
     } else {
         console.log("Letter already guessed");
@@ -180,8 +203,8 @@ function processIncorrectGuess() {
 //If userChoice array = currentWord, then user wins
 // Increment price money & Display press any key for next question
 function validateUserGuess() {
-    console.log("User Guessed: " + keyPressed);
-    console.log(computerWord.indexOf(keyPressed));
+    // console.log("User Guessed: " + keyPressed);
+    // console.log(computerWord.indexOf(keyPressed));
     if (computerWord.indexOf(keyPressed) != -1) {
         userGuessedCorrect = true;
         processCorrectGuess();
@@ -213,10 +236,11 @@ document.onkeyup = function (event) {
         //IF THE GAME HAS NOT STARTED
         //   INITIALIZE THE COUNTERS - WINS, PRICE MONEY
         //   Call makeComputerMakeTheChoice()
+
         winCounter = 0;
         lossCounter = 0;
         totalPriceMoney = 0;
-        console.log("Inside Game has not started, initialized variables");
+        // console.log("Inside Game has not started, initialized variables");
         makeComputerChooseWords();
         hasGameStarted = true;
         questionNumber = 1
@@ -224,6 +248,11 @@ document.onkeyup = function (event) {
     }
 
     if (hasGameStarted && askNextQuestion) {
+        if (questionNumber == 6) {
+            document.querySelector("#computerMadeItsChoice").innerHTML = "GAME OVER";
+            return;
+        }
+
         determineGameLevel(questionNumber);
         chooseWordForCurrentQuestion();
         askQuestionOnScreen();
