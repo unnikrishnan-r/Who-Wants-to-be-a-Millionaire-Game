@@ -9,21 +9,24 @@ var currentWordText = document.getElementById("currentWordText");
 var guessesLeftText = document.getElementById("guessesLeftText");
 var lettersGuessedSoFarText = document.getElementById("lettersGuessedSoFarText");
 
+var submitButton = document.getElementById("submitButton");
+var restartButton = document.getElementById("restartButton");
+var continueButton = document.getElementById("continueButton");
+
+
 // Array with master list of simple medium and complex words
 var simpleWordsArray = ['lion', 'cat', 'fish', 'tiger', 'dog', "horse", "bear", "camel", "fox", "wolf"];
 var mediumWordsArray = ['snake', 'zebra', 'mouse', 'spider', 'donkey', 'monkey', 'squirel', 'turtle', 'lizard', 'word10'];
 var complexWordsArray = ['comp1', 'comp2', 'comp3', 'comp4', 'comp5', 'comp6', 'comp7', 'comp8', 'comp9']
 
-//Object for storing current game questions:
-var currentGameQuestions = {
-    simpleWordsChosen: [],
-    mediumWordsChosen: [],
-    complexWordsChosen: []
-}
-
 //Game State
 var hasGameStarted = false;
 var askNextQuestion = true;
+
+//Button Controls
+var enableStartButton = true;
+var enableRestartButton = true;
+var enableContinueButton = true;
 
 //Counter Variables
 var totalGuess = 100;
@@ -35,17 +38,19 @@ var correctGuessCounter = 0;
 //Index Variables
 var i = 0;
 
-//Game Variables
+//Game Constants
 var totalQuestionsInGame = 5;
 var simpleWordsToBeAsked = 3;
 var mediumWordsToBeAsked = 1;
 var complexWordsToBeAsked = 1;
+
+//Game Variables
 var questionNumber = 0;
 var gameLevel;
 var wordInPlay;
 var keyPressed;
 var userGuessedCorrect = false;
-//Computer and Player Choice variables
+
 var randomNumber = 0;
 var userGuess = [];
 var currentWord = [];
@@ -55,17 +60,75 @@ var computerWord = [];
 /*********************************************************************************
  **********************OBJECT DECLARATIONS HERE************************************ 
  *********************************************************************************/
-// Array with objects as members, where computer has choosen 5 words randomly from
-// the master list
+//Object with arrays are members. Arrays are based on level of game
+//Object for storing current game questions:
+var currentGameQuestions = {
+    simpleWordsChosen: [],
+    mediumWordsChosen: [],
+    complexWordsChosen: []
+}
 
 /*********************************************************************************
  **********************FUNCTIONS DEFINED HERE************************************** 
  *********************************************************************************/
-//makeComputerChooseWords()
-//Choose 3 random numbers - from simple words array get 3 words
-//Choose 1 random number - from medium words array get 1 word
-//Choose 1 random number - from complex words array get 1 word
 
+// Function to initialize variables during start/restart of the game
+function initializeVariables() {
+    winCounter = 0;
+    lossCounter = 0;
+    totalPriceMoney = 0;
+    correctGuessCounter = 0
+    hasGameStarted = true;
+    askNextQuestion = true;
+    questionNumber = 1;
+    randomNumber = 0;
+    userGuess = [];
+    currentWord = [];
+    computerWord = [];
+    console.log(currentGameQuestions);
+    currentGameQuestions = {
+        simpleWordsChosen: [],
+        mediumWordsChosen: [],
+        complexWordsChosen: []
+    }
+    console.log(currentGameQuestions);
+    userGuessedCorrect = false;
+    wordInPlay = ' ';
+    gameLevel = ' ';
+}
+
+/*Function to start game ; calls functions to perform
+    - Computer to pick random words - Simple, Medium, Complex from the Master array
+    - Take the game forward
+    - Handle button states
+*/
+function startGame() {
+    initializeVariables();
+    makeComputerChooseWords();
+    continueGame();
+
+    enableStartButton = false;
+    enableRestartButton = true;
+    handleButtonStates();
+    return;
+    // handleButtonStates ("submitButton", "btn-primary", "remove");
+}
+
+/* Function to continue to Next Question with in a game
+    - Determine game level (Simple, Medium, Complex) and chooses the word
+ */
+function continueGame() {
+    determineGameLevel(questionNumber);
+    chooseWordForCurrentQuestion();
+    askQuestionOnScreen();
+    askNextQuestion = false;
+    return;
+
+}
+
+/*Makes Computer choose words for current game
+  Based on game constant values (# of questions), this function chooses random words for each level
+*/
 function makeComputerChooseWords() {
 
     //Choose 3 simple words using random occurence: It is possible that same word is picked twice because of small 
@@ -125,29 +188,48 @@ function chooseWordForCurrentQuestion() {
 
 }
 
-//askQuestion ()
-// Initialize variables Qustion, Current Word, Guesses So far, Guesses Left
+//Render the question on the screen
+// Initialize variables Question, Current Word, Guesses So far, Guesses Left
 // Accept Question Number as Argument
 // Access object and obtain question, answer and price money
 // Throw information on the screen
 function askQuestionOnScreen() {
-    currentWord = []
+    currentWord = [];
+    userGuess = [];
     totalGuess = wordInPlay.length * 2;
-    document.querySelector("#computerMadeItsChoice").innerHTML = "Computer made its choice, start your guess";
-    guessesLeftText.textContent = totalGuess;
-    winsText.textContent = winCounter;
+    correctGuessCounter = 0;
 
     for (i = 0; i <= wordInPlay.length - 1; i++) {
         currentWord[i] = '_';
-
     }
-    userGuess = [];
+
+    guessesLeftText.textContent = totalGuess;
+    winsText.textContent = winCounter;
     currentWordText.textContent = currentWord;
     lettersGuessedSoFarText.textContent = userGuess;
+
     document.querySelector("#questionNumber").innerHTML = wordInPlay;
+    document.querySelector("#computerMadeItsChoice").innerHTML = "Computer made its choice, start your guess";
 
-    correctGuessCounter = 0;
+    enableContinueButton = false;
+    handleButtonStates();
+}
 
+/*Validate user's guess
+*/
+function validateUserGuess() {
+    if (computerWord.indexOf(keyPressed) != -1) {
+        userGuessedCorrect = true;
+        processCorrectGuess();
+    } else {
+        userGuessedCorrect = false;
+        processIncorrectGuess();
+    }
+    currentWordText.textContent = currentWord;
+    guessesLeftText.textContent = totalGuess;
+    lettersGuessedSoFarText.textContent = userGuess;
+    winsText.textContent = winCounter;
+    lossesText.textContent = lossCounter;
 }
 
 //Function to handle succesfull guess by user
@@ -158,24 +240,17 @@ function processCorrectGuess() {
 
     if (correctGuessCounter == computerWord.length) {
         winCounter++;
-        questionNumber++;
-        askNextQuestion = true;
-        document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
-
-    }
-    if (totalGuess == 0) {
+        handleWinLoss();
+    } else if (totalGuess == 0) {
         lossCounter++;
-        questionNumber++;
-        askNextQuestion = true;
-        document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
-
-
+        handleWinLoss();
     }
-
-    // console.log(currentWord);
-
 }
 
+/* Function to handle incorrect guess
+   - If Letter already guessed, do noting
+   - If new letter - Display the guess on screen, decrement counter etc
+*/
 function processIncorrectGuess() {
     if (userGuess.indexOf(keyPressed) == -1) {
 
@@ -186,87 +261,76 @@ function processIncorrectGuess() {
             lossCounter++;
             questionNumber++;
             askNextQuestion = true;
-            document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to move to next question";
-
+            handleWinLoss();
         }
     } else {
         console.log("Letter already guessed");
     }
-
-
 }
 
+// function handleButtonStates (buttonName, buttonClass, action) {
+function handleButtonStates() {
 
-//validateUserGuess()
-//Populate user key to array of guessed so far
-//If user guessed key is in currentword, then reveal and populate userChoice array, remove letter from 
-// userguessed array
-//If user guessed key is not in current word, decrement guess Count
-//If userChoice array = currentWord, then user wins
-// Increment price money & Display press any key for next question
-function validateUserGuess() {
-    // console.log("User Guessed: " + keyPressed);
-    // console.log(computerWord.indexOf(keyPressed));
-    if (computerWord.indexOf(keyPressed) != -1) {
-        userGuessedCorrect = true;
-        processCorrectGuess();
-    } else {
-        userGuessedCorrect = false;
-        processIncorrectGuess();
+
+    if (!enableStartButton) {
+        submitButton.setAttribute("disabled", true);
+        submitButton.classList.remove("btn-primary");
+        submitButton.classList.add("btn-secondary");
+    }
+
+    if (enableRestartButton) {
+        restartButton.removeAttribute("disabled");
+        restartButton.classList.remove("btn-secondary");
+        restartButton.classList.add("btn-primary");
 
     }
-    currentWordText.textContent = currentWord;
-    guessesLeftText.textContent = totalGuess;
-    lettersGuessedSoFarText.textContent = userGuess;
-    winsText.textContent = winCounter;
-    lossesText.textContent = lossCounter;
+
+    if (!enableContinueButton) {
+        continueButton.setAttribute("disabled", "true");
+        continueButton.classList.remove("btn-primary");
+        continueButton.classList.add("btn-secondary");
+
+    }
+    // if (action === "remove"){
+
+    //     buttonName.classList.remove(buttonClass);
+    // }
 
 
 }
 
+function handleWinLoss() {
+    questionNumber++;
+    askNextQuestion = true;
+    if (questionNumber <= totalQuestionsInGame) {
+
+        continueButton.removeAttribute("disabled");
+        continueButton.classList.remove("btn-secondary");
+        continueButton.classList.add("btn-primary");
+    } else {
+        document.querySelector("#computerMadeItsChoice").innerHTML = "GAME OVER";
+        return;
+
+    }
+
+
+}
 /*********************************************************************************
  ***************************MAIN PROCESS HERE************************************** 
  *********************************************************************************/
 
 
 // CAPTURE THE KEY STROKE EVENT
-document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to start the game";
+// document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to start the game";
+submitButton.addEventListener("click", startGame);
+
+restartButton.addEventListener("click", startGame);
+
+continueButton.addEventListener("click", continueGame);
+
 document.onkeyup = function (event) {
     keyPressed = event.key.toLowerCase();
-    //CHECK IF THE GAME HAS STARTED
-    if (!hasGameStarted) {
-        //IF THE GAME HAS NOT STARTED
-        //   INITIALIZE THE COUNTERS - WINS, PRICE MONEY
-        //   Call makeComputerMakeTheChoice()
-
-        winCounter = 0;
-        lossCounter = 0;
-        totalPriceMoney = 0;
-        // console.log("Inside Game has not started, initialized variables");
-        makeComputerChooseWords();
-        hasGameStarted = true;
-        questionNumber = 1
-
-    }
-
-    if (hasGameStarted && askNextQuestion) {
-        if (questionNumber == 6) {
-            document.querySelector("#computerMadeItsChoice").innerHTML = "GAME OVER";
-            return;
-        }
-
-        determineGameLevel(questionNumber);
-        chooseWordForCurrentQuestion();
-        askQuestionOnScreen();
-        askNextQuestion = false;
-        return;
-    } else {
+    if (hasGameStarted && !askNextQuestion) {
         validateUserGuess();
     }
 }
-
-
-
-// IF THE GAME HAS STARTED
-//  CHECK IF GUESS COUNTER = 0, IF NO
-//  Call validateUserGuess()     
