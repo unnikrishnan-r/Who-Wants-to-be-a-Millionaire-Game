@@ -268,7 +268,7 @@ function processIncorrectGuess() {
     }
 }
 
-// function handleButtonStates (buttonName, buttonClass, action) {
+// Function to handle enabling and disabling of Start, Restart and Next Question Button
 function handleButtonStates() {
 
 
@@ -291,6 +291,12 @@ function handleButtonStates() {
         continueButton.classList.add("btn-secondary");
 
     }
+    else{
+        continueButton.removeAttribute("disabled");
+        continueButton.classList.remove("btn-secondary");
+        continueButton.classList.add("btn-primary");
+
+    }
     // if (action === "remove"){
 
     //     buttonName.classList.remove(buttonClass);
@@ -299,18 +305,16 @@ function handleButtonStates() {
 
 }
 
+//Function to handle Win or Loss Scenario
 function handleWinLoss() {
     questionNumber++;
     askNextQuestion = true;
     if (questionNumber <= totalQuestionsInGame) {
-
-        continueButton.removeAttribute("disabled");
-        continueButton.classList.remove("btn-secondary");
-        continueButton.classList.add("btn-primary");
+        enableContinueButton = true;
+        handleButtonStates();
     } else {
         document.querySelector("#computerMadeItsChoice").innerHTML = "GAME OVER";
         return;
-
     }
 
 
