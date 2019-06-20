@@ -8,6 +8,7 @@ var lossesText = document.getElementById("lossesText");
 var currentWordText = document.getElementById("currentWordText");
 var guessesLeftText = document.getElementById("guessesLeftText");
 var lettersGuessedSoFarText = document.getElementById("lettersGuessedSoFarText");
+var priceMoneyText =  document.getElementById("priceMoneyText");
 
 var submitButton = document.getElementById("submitButton");
 var restartButton = document.getElementById("restartButton");
@@ -22,6 +23,12 @@ var complexWordsArray = ['comp1', 'comp2', 'comp3', 'comp4', 'comp5', 'comp6', '
 //Game State
 var hasGameStarted = false;
 var askNextQuestion = true;
+
+//Game Messages
+var letterAlreadyGuessedMessage = "Letter already guessed, try again";
+var startGuessingMessage = "Computer has made its choice, your turn to guess. Good luck!";
+var invalidKeystrokeMessage = "Guess is not a letter, try again";
+var gameOverMessage = "GAME OVER";
 
 //Button Controls
 var enableStartButton = true;
@@ -205,11 +212,14 @@ function askQuestionOnScreen() {
 
     guessesLeftText.textContent = totalGuess;
     winsText.textContent = winCounter;
+    lossesText.textContent = lossCounter;
     currentWordText.textContent = currentWord;
     lettersGuessedSoFarText.textContent = userGuess;
+    priceMoneyText.textContent = totalPriceMoney;
+
 
     document.querySelector("#questionNumber").innerHTML = wordInPlay;
-    document.querySelector("#computerMadeItsChoice").innerHTML = "Computer made its choice, start your guess";
+    document.querySelector("#computerMadeItsChoice").innerHTML = startGuessingMessage;
 
     enableContinueButton = false;
     handleButtonStates();
@@ -234,16 +244,34 @@ function validateUserGuess() {
 
 //Function to handle succesfull guess by user
 function processCorrectGuess() {
-    currentWord[computerWord.indexOf(keyPressed)] = keyPressed;
-    correctGuessCounter++;
-    totalGuess--;
+    if(userGuess.indexOf(keyPressed) == -1){
 
-    if (correctGuessCounter == computerWord.length) {
-        winCounter++;
-        handleWinLoss();
-    } else if (totalGuess == 0) {
-        lossCounter++;
-        handleWinLoss();
+        currentWord[computerWord.indexOf(keyPressed)] = keyPressed;
+        correctGuessCounter++;
+        totalGuess--;
+        userGuess.push(keyPressed);
+        guessesLeftText.textContent = totalGuess;
+        
+        if (correctGuessCounter == computerWord.length) {
+            winCounter++;
+            switch(questionNumber){
+                case 1: totalPriceMoney += 25000   ; break;
+                case 2: totalPriceMoney += 75000   ; break;
+                case 3: totalPriceMoney += 150000  ; break;
+                case 4: totalPriceMoney += 250000  ; break;
+                case 5: totalPriceMoney += 500000  ; break;
+
+            }
+            priceMoneyText.textContent = totalPriceMoney;
+            handleWinLoss();
+        } else if (totalGuess == 0) {
+            lossCounter++;
+            handleWinLoss();
+        }
+    }else{
+        console.log("Letter already guessed");
+        document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
+
     }
 }
 
@@ -265,6 +293,8 @@ function processIncorrectGuess() {
         }
     } else {
         console.log("Letter already guessed");
+        document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
+
     }
 }
 
@@ -313,7 +343,7 @@ function handleWinLoss() {
         enableContinueButton = true;
         handleButtonStates();
     } else {
-        document.querySelector("#computerMadeItsChoice").innerHTML = "GAME OVER";
+        document.querySelector("#computerMadeItsChoice").innerHTML = gameOverMessage;
         return;
     }
 
@@ -325,7 +355,6 @@ function handleWinLoss() {
 
 
 // CAPTURE THE KEY STROKE EVENT
-// document.querySelector("#computerMadeItsChoice").innerHTML = "Press any key to start the game";
 submitButton.addEventListener("click", startGame);
 
 restartButton.addEventListener("click", startGame);
@@ -335,6 +364,11 @@ continueButton.addEventListener("click", continueGame);
 document.onkeyup = function (event) {
     keyPressed = event.key.toLowerCase();
     if (hasGameStarted && !askNextQuestion) {
-        validateUserGuess();
+        if (event.keyCode >=65 && event.keyCode <=90){
+            document.querySelector("#computerMadeItsChoice").innerHTML = " ";
+            validateUserGuess();
+        }else{
+            document.querySelector("#computerMadeItsChoice").innerHTML = invalidKeystrokeMessage;
+        }
     }
 }

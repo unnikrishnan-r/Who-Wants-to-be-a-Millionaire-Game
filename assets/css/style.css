@@ -1,0 +1,27 @@
+.currentWord{
+    /* font-size: 50px; */
+    color: red !important;
+
+}
+
+
+.controlButtons{
+    padding: 0 !important;   
+    background-color: transparent;
+    text-align: center;
+}
+
+#computerMadeItsChoice{
+    padding: 0;
+}
+
+.headings{
+text-decoration: underline;
+text-align: center;
+text-decoration-style: wavy;
+text-decoration-line: overline underline; 
+color: brown;
+}
+
+#priceMoneyText:before{ content:'$'; }
+

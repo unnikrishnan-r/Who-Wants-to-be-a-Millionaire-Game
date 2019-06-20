@@ -1,49 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Who Wants to be a Millionaire!</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    </llink>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
 </head>
+
 <body>
-    
-<h1> Who wants to be a Millionaire by guessing an animal?</h1>
 
-<a href="rules.html" target="_blank">Rules of the Game</a>
+    <h1 class="page-header"> Who wants to be a Millionaire by guessing an animal?</h1>
 
-<p id="computerMadeItsChoice"></p>
-
-<p id="questionNumber"> </p>
-
-<p id="question"></p>
-
-<p> You Won: <span id="winsText"></span></p>
-
-<p> You Lost: <span id="lossesText"></span></p>
+    <a href="rules.html" target="_blank">Rules of the Game</a>
 
 
 
-<p> Current Word: <span id="currentWordText"></span></p>
+    <div class="container">
 
-<p> Guesses left for the answer: <span id="guessesLeftText"></span></p>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-primary" role="alert">
+                    <p id="computerMadeItsChoice"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
 
-<p> Letters Guessed so far: <span id="lettersGuessedSoFarText"></span></p>
+            <div class="col-6">
+                <div class="jumbotron">
+                    <h2 class="headings"> SCORE CARD</h2>
+                    <br>
+                    <h4> WINS: <span id="winsText"></span></h4>
+                    <br>
+                    <h4> LOSSES: <span id="lossesText"></span></h4>
+                    <br>
+                    <h4> PRICE MONEY: <span id="priceMoneyText"></span></h4>
+                    <!-- <br>
+                    <h4> GAME LEVEL:</h4> -->
+                </div>
 
-<div class="controlButtons">
+            </div>
 
-    <input class="btn btn-primary     m-3"   type="submit" id="submitButton" value="Start">
-    <input class="btn btn-secondary   m-3"  disabled type="submit" id="restartButton"  value="Restart">
-    <input class="btn btn-secondary   m-3"  disabled type="submit" id="continueButton"  value="Next Question">
+            <div class="col-6">
+                <div class="jumbotron">
+                    <h2 class="headings"> GAME IN PROGRESS..</h2>
+                    <br>
+                    <h4> WORD SO FAR: <span class="currentWord" id="currentWordText"></span></h4>
+                    <br>
+                    <h4> REMAINING ATTEMPTS: <span id="guessesLeftText"></span></h4>
+                    <br>
+                    <h4> LETTERS USED: <span id="lettersGuessedSoFarText"></span></h4>
+                </div>
 
-</div>
-<script src="./assets/javascript/game.js"></script>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="jumbotron controlButtons ">
+                    <input class="btn btn-primary     m-3" type="submit" id="submitButton" value="Start">
+                    <input class="btn btn-secondary   m-3" disabled type="submit" id="restartButton" value="Restart">
+                    <input class="btn btn-secondary   m-3" disabled type="submit" id="continueButton"
+                        value="Next Question">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <p id="questionNumber"> </p>
+
+    <p id="question"></p>
+
+    <script src="./assets/javascript/game.js"></script>
 
 </body>
+
 </html>
