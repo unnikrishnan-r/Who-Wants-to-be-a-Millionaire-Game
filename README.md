@@ -15,3 +15,7 @@ The game has been developed using javascript as the primary technology, assisted
 ## Limitations to be addressed in upcoming versions
 The initial set of words are hardcoded
 Words with repeating letters (cheetah) are not supported
+
+# Logical Flow of the program
+The flow of the application has been diagramatically represented here:
+<img src="./assets/images/WW2BM Flowchart.png">
