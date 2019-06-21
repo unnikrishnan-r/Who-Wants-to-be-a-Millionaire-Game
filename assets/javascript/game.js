@@ -17,8 +17,8 @@ var continueButton = document.getElementById("continueButton");
 
 // Array with master list of simple medium and complex words
 var simpleWordsArray = ['lion', 'cat', 'fish', 'tiger', 'dog', "horse", "bear", "camel", "fox", "wolf"];
-var mediumWordsArray = ['snake', 'zebra', 'mouse', 'spider', 'donkey', 'monkey', 'squirel', 'turtle', 'lizard', 'word10'];
-var complexWordsArray = ['comp1', 'comp2', 'comp3', 'comp4', 'comp5', 'comp6', 'comp7', 'comp8', 'comp9']
+var mediumWordsArray = ['snake', 'zebra', 'mouse', 'spider', 'donkey', 'monkey', 'squirel', 'turtle', 'lizard', 'cheetah'];
+var complexWordsArray = ['elephant', 'hippopotamus', 'rhinoceros', 'leopard', 'porcupine', 'alligator', 'crocodile', 'octopus', 'gorilla']
 
 //Game State
 var hasGameStarted = false;
@@ -244,9 +244,14 @@ function validateUserGuess() {
 
 //Function to handle succesfull guess by user
 function processCorrectGuess() {
-    if(userGuess.indexOf(keyPressed) == -1){
+    //Commenting out the outer if check that looks if the "Letter is already guessed".
+    //In the event of a correct guess, the letter already existing means that letter is there twice in the word
+    // if(userGuess.indexOf(keyPressed) == -1){
 
         currentWord[computerWord.indexOf(keyPressed)] = keyPressed;
+        //Replacing the guessed letter in the computer word variable. 
+        //This is done just in case the letter occurs again in the word, eg: CHEETAH
+        computerWord[computerWord.indexOf(keyPressed)] = '@';
         correctGuessCounter++;
         totalGuess--;
         userGuess.push(keyPressed);
@@ -268,11 +273,11 @@ function processCorrectGuess() {
             lossCounter++;
             handleWinLoss();
         }
-    }else{
-        console.log("Letter already guessed");
-        document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
+    // }else{
+    //     console.log("Letter already guessed");
+    //     document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
 
-    }
+    // }
 }
 
 /* Function to handle incorrect guess
