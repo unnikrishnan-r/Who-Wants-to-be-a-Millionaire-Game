@@ -292,7 +292,6 @@ function processIncorrectGuess() {
         guessesLeftText.textContent = totalGuess;
         if (totalGuess == 0) {
             lossCounter++;
-            questionNumber++;
             askNextQuestion = true;
             handleWinLoss();
         }
