@@ -92,13 +92,13 @@ function initializeVariables() {
     userGuess = [];
     currentWord = [];
     computerWord = [];
-    console.log(currentGameQuestions);
+    // console.log(currentGameQuestions);
     currentGameQuestions = {
         simpleWordsChosen: [],
         mediumWordsChosen: [],
         complexWordsChosen: []
     }
-    console.log(currentGameQuestions);
+    // console.log(currentGameQuestions);
     userGuessedCorrect = false;
     wordInPlay = ' ';
     gameLevel = ' ';
@@ -172,7 +172,7 @@ function determineGameLevel(questionNumber) {
     } else {
         gameLevel = "complex";
     }
-    console.log("Game Level is: " + gameLevel);
+    // console.log("Game Level is: " + gameLevel);
 }
 
 //Function to choose the word for current question from the choices Computer made for the game
@@ -218,7 +218,7 @@ function askQuestionOnScreen() {
     priceMoneyText.textContent = totalPriceMoney;
 
 
-    document.querySelector("#questionNumber").innerHTML = wordInPlay;
+    // document.querySelector("#questionNumber").innerHTML = wordInPlay;
     document.querySelector("#computerMadeItsChoice").innerHTML = startGuessingMessage;
 
     enableContinueButton = false;
@@ -269,7 +269,7 @@ function processCorrectGuess() {
             handleWinLoss();
         }
     }else{
-        console.log("Letter already guessed");
+        // console.log("Letter already guessed");
         document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
 
     }
@@ -287,12 +287,11 @@ function processIncorrectGuess() {
         guessesLeftText.textContent = totalGuess;
         if (totalGuess == 0) {
             lossCounter++;
-            questionNumber++;
             askNextQuestion = true;
             handleWinLoss();
         }
     } else {
-        console.log("Letter already guessed");
+        // console.log("Letter already guessed");
         document.querySelector("#computerMadeItsChoice").innerHTML = letterAlreadyGuessedMessage;
 
     }
